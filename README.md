@@ -19,3 +19,5 @@ Event: Friday, 25 December 2026, 6–8 p.m. (Asia/Amman), Al-Sawsana Hall. The m
 Branding links to Q4 Creative Agency on Instagram. After opening, the page gently scrolls 72–120 pixels over two seconds. Any wheel, touch, pointer, or keyboard input cancels the movement. Reduced-motion users and preview mode do not receive automatic scrolling.
 
 The AM seal (`assets/am-medallion.png`) and letters (`assets/am-monogram.png`) are the exact uploaded PNGs, including their transparency.
+
+Design variation: `theme.css` adds sage/ivory colors, an arched invitation cover, olive-branch corners, and botanical dividers. The approved original remains in Git history at commit `5d54858`.
