@@ -21,6 +21,44 @@ toggle.addEventListener('click', async () => {
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
 }, { threshold: .08 });
+function gentlyScrollAfterReveal() {
+  if (reducedMotion) return;
+  let timer;
+  let frame;
+  let stopped = false;
+  let started;
+  let previousBehavior;
+  const interruptEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+  const stop = () => {
+    stopped = true;
+    clearTimeout(timer);
+    cancelAnimationFrame(frame);
+    if (previousBehavior !== undefined) {
+      document.documentElement.style.scrollBehavior = previousBehavior;
+    }
+    interruptEvents.forEach(type => window.removeEventListener(type, stop));
+  };
+  interruptEvents.forEach(type => window.addEventListener(type, stop, { passive: true }));
+  timer = setTimeout(() => {
+    if (stopped) return;
+    const from = window.scrollY;
+    const remaining = document.documentElement.scrollHeight - window.innerHeight - from;
+    const distance = Math.min(Math.max(Math.round(window.innerHeight * .13), 72), 120, remaining);
+    if (distance <= 1) { stop(); return; }
+    previousBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    const animate = now => {
+      if (stopped) return;
+      if (started === undefined) started = now;
+      const progress = Math.min((now - started) / 2000, 1);
+      const eased = progress < .5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      window.scrollTo({ top: from + distance * eased, left: 0, behavior: 'auto' });
+      if (progress < 1) frame = requestAnimationFrame(animate);
+      else stop();
+    };
+    frame = requestAnimationFrame(animate);
+  }, 800);
+}
 function showInvitation(playMusic = true) {
   if (opened) return;
   opened = true;
@@ -38,7 +76,13 @@ function showInvitation(playMusic = true) {
     document.body.classList.remove('cover-visible'); opening.style.opacity = '0';
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     window.scrollTo(0, 0);
-    setTimeout(() => { opening.hidden = true; if (playMusic) document.querySelector('.scroll-cue').focus({preventScroll:true}); }, reducedMotion ? 0 : 700);
+    setTimeout(() => {
+      opening.hidden = true;
+      if (playMusic) {
+        document.querySelector('.scroll-cue').focus({ preventScroll: true });
+        gentlyScrollAfterReveal();
+      }
+    }, reducedMotion ? 0 : 700);
   }, reducedMotion || !playMusic ? 0 : 1400);
 }
 document.querySelector('#open').addEventListener('click', () => showInvitation());
