@@ -45,11 +45,11 @@ document.querySelector('#open').addEventListener('click', () => showInvitation()
 const guest = params.get('guest')?.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
 if (guest) { document.querySelector('#guest-name').textContent = guest; document.querySelector('#guest').hidden = false; }
 if (params.has('preview')) showInvitation(false);
-const wedding = new Date('2026-10-15T21:00:00+03:00').getTime();
+const wedding = new Date('2026-12-25T18:00:00+03:00').getTime();
 function countdown() {
   const total = Math.max(0, Math.floor((wedding - Date.now()) / 1000));
   const values = { days: Math.floor(total / 86400), hours: Math.floor(total % 86400 / 3600), minutes: Math.floor(total % 3600 / 60), seconds: total % 60 };
   Object.entries(values).forEach(([key, value]) => { document.getElementById(key).textContent = String(value).padStart(2, '0'); });
 }
 countdown(); setInterval(countdown, 1000);
-document.querySelector('#calendar').href = 'https://www.google.com/calendar/render?' + new URLSearchParams({action:'TEMPLATE',text:'حفل زفاف عمر و اسلام',dates:'20261015T180000Z/20261015T220000Z',ctz:'Asia/Amman',details:'يسعدنا دعوتكم لحضور حفل زفاف عمر و اسلام في قاعات الكرم للاحتفالات.',location:'قاعات الكرم للاحتفالات، الأردن'});
+document.querySelector('#calendar').href = 'https://www.google.com/calendar/render?' + new URLSearchParams({action:'TEMPLATE',text:'حفل زفاف علي و ميس',dates:'20261225T150000Z/20261225T170000Z',ctz:'Asia/Amman',details:'يسعدنا دعوتكم لحضور حفل زفاف علي و ميس في صالة السوسنة.',location:'صالة السوسنة، الأردن'});
